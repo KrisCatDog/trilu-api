@@ -30,8 +30,8 @@ Route::group(['middleware' => 'authapi'], function () {
     Route::delete('board/{board}', [\App\Http\Controllers\BoardController::class, 'destroy']);
     Route::get('board', [\App\Http\Controllers\BoardController::class, 'index']);
     Route::get('board/{board}', [\App\Http\Controllers\BoardController::class, 'show']);
-    Route::post('board/{board}/member', [\App\Http\Controllers\BoardController::class, 'addMember']);
-    Route::delete('board/{board}/member/{user}', [\App\Http\Controllers\BoardController::class, 'removeMember']);
+    Route::post('board/{board}/member', [\App\Http\Controllers\BoardMemberController::class, 'store']);
+    Route::delete('board/{board}/member/{user}', [\App\Http\Controllers\BoardMemberController::class, 'destroy']);
 
     // list
     Route::post('board/{board}/list', [\App\Http\Controllers\BoardListController::class, 'store']);

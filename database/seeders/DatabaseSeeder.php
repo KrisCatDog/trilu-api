@@ -15,28 +15,27 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
-        $user1 = User::create([
-            'username' => 'john.doe',
-            'password' => bcrypt('12345'),
+        $firstUser = User::create([
             'first_name' => 'John',
             'last_name' => 'Doe',
-        ]);
-        $user2 = User::create([
-            'username' => 'richard.roe',
+            'username' => 'john.doe',
             'password' => bcrypt('12345'),
+        ]);
+        $secondUser = User::create([
             'first_name' => 'Richard',
             'last_name' => 'Roe',
-        ]);
-        $user3 = User::create([
-            'username' => 'jane.poe',
+            'username' => 'richard.roe',
             'password' => bcrypt('12345'),
+        ]);
+        $thirdUser = User::create([
             'first_name' => 'Jane',
             'last_name' => 'Poe',
+            'username' => 'jane.poe',
+            'password' => bcrypt('12345'),
         ]);
 
-
-        $user1->loginToken()->create();
-        $user2->loginToken()->create();
-        $user3->loginToken()->create();
+        $firstUser->loginToken()->create();
+        $secondUser->loginToken()->create();
+        $thirdUser->loginToken()->create();
     }
 }

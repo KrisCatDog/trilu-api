@@ -6,6 +6,7 @@ use App\Models\Board;
 use App\Models\BoardList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class BoardListController extends Controller
 {
@@ -15,22 +16,21 @@ class BoardListController extends Controller
      * @param \Illuminate\Http\Request $request
      * @param Board $board
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request, Board $board)
     {
+        $board->load('members');
+
         $validator = Validator::make($request->all(), [
             'name' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => 'invalid field'], 422);
+            return response()->json(['message' => 'invalid field'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $board->load('members');
-
-        if (!$board->members->contains(auth()->user())) {
-            return response()->json(['message' => 'unauthorized user'], 401);
+        if (!$board->members->contains(auth()->id())) {
+            return response()->json(['message' => 'unauthorized user'], Response::HTTP_UNAUTHORIZED);
         }
 
         if ($board->boardLists()->count() > 0) {
@@ -45,17 +45,6 @@ class BoardListController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param \App\Models\BoardList $boardList
-     * @return \Illuminate\Http\Response
-     */
-    public function show(BoardList $boardList)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
@@ -65,18 +54,18 @@ class BoardListController extends Controller
      */
     public function update(Request $request, Board $board, BoardList $boardList)
     {
+        $board->load('members');
+
         $validator = Validator::make($request->all(), [
             'name' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => 'invalid field'], 422);
+            return response()->json(['message' => 'invalid field'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $board->load('members');
-
-        if (!$board->members->contains(auth()->user())) {
-            return response()->json(['message' => 'unauthorized user'], 401);
+        if (!$board->members->contains(auth()->id())) {
+            return response()->json(['message' => 'unauthorized user'], Response::HTTP_UNAUTHORIZED);
         }
 
         $boardList->update($validator->validated());
@@ -90,14 +79,13 @@ class BoardListController extends Controller
      * @param Board $board
      * @param \App\Models\BoardList $boardList
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Validation\ValidationException
      */
     public function destroy(Board $board, BoardList $boardList)
     {
         $board->load('members');
 
-        if (!$board->members->contains(auth()->user())) {
-            return response()->json(['message' => 'unauthorized user'], 401);
+        if (!$board->members->contains(auth()->id())) {
+            return response()->json(['message' => 'unauthorized user'], Response::HTTP_UNAUTHORIZED);
         }
 
         $nextBoardLists = $board->boardLists()->where('order', '>', $boardList->order)->get();
@@ -115,8 +103,8 @@ class BoardListController extends Controller
     {
         $board->load('members');
 
-        if (!$board->members->contains(auth()->user())) {
-            return response()->json(['message' => 'unauthorized user'], 401);
+        if (!$board->members->contains(auth()->id())) {
+            return response()->json(['message' => 'unauthorized user'], Response::HTTP_UNAUTHORIZED);
         }
 
         $nextList = $board->boardLists()->where('order', $boardList->order + 1)->first();
@@ -134,8 +122,8 @@ class BoardListController extends Controller
     {
         $board->load('members');
 
-        if (!$board->members->contains(auth()->user())) {
-            return response()->json(['message' => 'unauthorized user'], 401);
+        if (!$board->members->contains(auth()->id())) {
+            return response()->json(['message' => 'unauthorized user'], Response::HTTP_UNAUTHORIZED);
         }
 
         $prevList = $board->boardLists()->where('order', $boardList->order - 1)->first();

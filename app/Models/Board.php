@@ -16,6 +16,11 @@ class Board extends Model
         return $this->belongsToMany(User::class, 'board_members');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'creator_id');
+    }
+
     public function boardLists()
     {
         return $this->hasMany(BoardList::class)->orderBy('order');

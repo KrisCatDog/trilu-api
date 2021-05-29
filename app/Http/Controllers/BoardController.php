@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Resources\BoardCollection;
 use App\Http\Resources\BoardResource;
 use App\Models\Board;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class BoardController extends Controller
 {
@@ -34,7 +34,7 @@ class BoardController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => 'invalid field'], 422);
+            return response()->json(['message' => 'invalid field'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $board = auth()->user()->boards()->create($validator->validated());
@@ -48,14 +48,14 @@ class BoardController extends Controller
      * Display the specified resource.
      *
      * @param \App\Models\Board $board
-     * @return mixed
+     * @return BoardResource
      */
     public function show(Board $board)
     {
         $board->load('members', 'boardLists', 'boardLists.cards');
 
-        if (!$board->members->contains(auth()->user())) {
-            return response()->json(['message' => 'unauthorized user'], 401);
+        if (!$board->members->contains(auth()->id())) {
+            return response()->json(['message' => 'unauthorized user'], Response::HTTP_UNAUTHORIZED);
         }
 
         return new BoardResource($board);
@@ -70,18 +70,18 @@ class BoardController extends Controller
      */
     public function update(Request $request, Board $board)
     {
+        $board->load('members');
+
         $validator = Validator::make($request->all(), [
             'name' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => 'invalid field'], 422);
+            return response()->json(['message' => 'invalid field'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $board->load('members');
-
-        if (!$board->members->contains(auth()->user())) {
-            return response()->json(['message' => 'unauthorized user'], 401);
+        if (!$board->members->contains(auth()->id())) {
+            return response()->json(['message' => 'unauthorized user'], Response::HTTP_UNAUTHORIZED);
         }
 
         $board->update($validator->validated());
@@ -98,43 +98,11 @@ class BoardController extends Controller
     public function destroy(Board $board)
     {
         if ($board->creator_id !== auth()->id()) {
-            return response()->json(['message' => 'unauthorized user'], 401);
+            return response()->json(['message' => 'unauthorized user'], Response::HTTP_UNAUTHORIZED);
         }
 
         $board->delete();
 
         return response()->json(['message' => 'delete board success']);
-    }
-
-    public function addMember(Request $request, Board $board)
-    {
-        $board->load('members');
-
-        if (!$board->members->contains(auth()->user())) {
-            return response()->json(['message' => 'unauthorized user'], 401);
-        }
-
-        $member = User::where('username', $request->username)->first();
-
-        if (!$member) {
-            return response()->json(['message' => 'user did not exist'], 422);
-        }
-
-        $board->members()->attach($member);
-
-        return response()->json(['message' => 'add member success']);
-    }
-
-    public function removeMember(Board $board, User $user)
-    {
-        $board->load('members');
-
-        if (!$board->members->contains(auth()->user())) {
-            return response()->json(['message' => 'unauthorized user'], 401);
-        }
-
-        $board->members()->detach($user);
-
-        return response()->json(['message' => 'remove member success']);
     }
 }

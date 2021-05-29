@@ -16,7 +16,7 @@ class CreateLoginTokensTable extends Migration
         Schema::create('login_tokens', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('token')->nullable()->default(null);
+            $table->string('token')->unique()->nullable()->default(null);
             $table->timestamps();
         });
     }
