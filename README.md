@@ -1,4 +1,4 @@
-# Trilu - Simple Trello Clone
+# Trilu - Simple Trello API Clone
 
 ## Installation
 
