@@ -10,11 +10,11 @@ Clone the repository
 
 Switch to the repo folder
 
-    cd trilu-api
+    cd trilu-api-with-laravel
 
 Install all the dependencies using composer
 
-    composer install
+    sail composer install
 
 Copy the example env file and make the required configuration changes in the .env file
 
@@ -46,7 +46,7 @@ You can now access the server at http://localhost
 
     git clone https://github.com/KrisCatDog/trilu-api-with-laravel.git
     cd trilu-api
-    composer install
+    sail composer install
     cp .env.example .env
     alias sail='bash vendor/bin/sail'
     sail up
