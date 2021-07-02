@@ -1,49 +1,62 @@
-# Trilu - Simple Trello API Clone
+# Trilu - Simple Trello Clone API 
+
+Created using Laravel with Docker Environment
 
 ## Installation
 
 Clone the repository
 
-    git clone https://github.com/KrisCatDog/trilu-api.git
+    git clone https://github.com/KrisCatDog/trilu-api-with-laravel.git
 
 Switch to the repo folder
 
-    cd trilu-api
+    cd trilu-api-with-laravel
 
 Install all the dependencies using composer
 
-    composer install
+    sail composer install
 
 Copy the example env file and make the required configuration changes in the .env file
 
     cp .env.example .env
+    
+Generate an alias for sail command (Recommended globally)
 
+    alias sail='bash vendor/bin/sail'
+
+Start all sail services
+
+    sail up
+    
 Generate a new application key
 
-    php artisan key:generate
+    sail artisan key:generate
 
 Run the database migrations (**Set the database connection in .env before migrating**)
 
-    php artisan migrate
+    sail artisan migrate
 
 Start the local development server
 
-    php artisan serve
+    sail up
 
-You can now access the server at http://localhost:8000
+You can now access the server at http://localhost
 
 **TL;DR command list**
 
-    git clone https://github.com/KrisCatDog/trilu-api.git
+    git clone https://github.com/KrisCatDog/trilu-api-with-laravel.git
     cd trilu-api
-    composer install
+    sail composer install
     cp .env.example .env
-    php artisan key:generate
+    alias sail='bash vendor/bin/sail'
+    sail up
+    sail artisan key:generate
+    sail artisan migrate
+    sail up
     
 **Make sure you set the correct database connection information before running the migrations** [Environment variables](#environment-variables)
 
-    php artisan migrate
-    php artisan serve
+    sail artisan migrate
 
 ## Database seeding
 
@@ -51,8 +64,8 @@ You can now access the server at http://localhost:8000
 
 Run the database seeder and you're done
 
-    php artisan db:seed
+    sail artisan db:seed
 
 ***Note*** : It's recommended to have a clean database before seeding. You can refresh your migrations at any point to clean the database by running the following command
 
-    php artisan migrate:refresh
+    sail artisan migrate:refresh
