@@ -1,6 +1,6 @@
 # Trilu - Simple Trello API Clone
 
-Created using Laravel with Docker Enviroment
+Created using Laravel with Docker Environment
 
 ## Installation
 
